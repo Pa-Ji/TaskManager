@@ -1,43 +1,182 @@
 <!DOCTYPE html>
-<html lang="cs" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <title>Seznam úkolů</title>
+    <meta charset="UTF-8" />
+    <title>Správce úkolů</title>
+    <style>
+        body {
+          background-color: #40e0d0;
+          color: black;
+          font-family: Arial, sans-serif;
+          margin: 0; padding: 0;
+        }
+        header {
+          background-color: #0077be;
+          color: white;
+          padding: 20px;
+          text-align: center;
+          font-size: 2em;
+        }
+        main {
+          padding: 20px;
+        }
+        .top-buttons {
+          margin-bottom: 15px;
+        }
+        .top-buttons button {
+          background-color: #3399ff;
+          color: white;
+          border: none;
+          padding: 12px 20px;
+          margin-right: 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 1em;
+        }
+        .sort-buttons {
+          margin-bottom: 20px;
+        }
+        .sort-buttons button {
+          background-color: #3399ff;
+          color: white;
+          border: none;
+          padding: 6px 12px;
+          margin-right: 8px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 0.9em;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 15px;
+        }
+        th, td {
+          padding: 10px;
+          border: 1px solid #ccc;
+          text-align: left;
+        }
+        .low { background-color: yellow; }
+        .medium { background-color: orange; }
+        .high { background-color: red; color: white; }
+        .completed { background-color: green; color: white; }
+        .action-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 1.2em;
+          margin-left: 5px;
+          color: #0077be;
+        }
+        .action-btn.delete {
+          color: red;
+        }
+        #no-tasks {
+          margin-top: 40px;
+          font-size: 1.2em;
+          text-align: center;
+        }
+        #no-tasks button {
+          margin-top: 15px;
+          background-color: #3399ff;
+          color: white;
+          border: none;
+          padding: 10px 18px;
+          border-radius: 5px;
+          font-size: 1em;
+          cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<h1>Seznam úkolů</h1>
-<form th:action="@{/filter}" method="get">
-    <label for="priority">Filtrovat podle priority:</label>
-    <select name="priority" id="priority">
-        <option value="low">Nízká</option>
-        <option value="medium">Střední</option>
-        <option value="high">Vysoká</option>
-    </select>
-    <button type="submit">Filtrovat</button>
-</form>
-<a th:href="@{/tasks/new}">+ Nový úkol</a>
-<table>
-    <thead>
-    <tr>
-        <th>Název</th>
-        <th>Popis</th>
-        <th>Priorita</th>
-        <th>Stav</th>
-        <th>Akce</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="task : ${tasks}">
-        <td th:text="${task.title}"></td>
-        <td th:text="${task.description}"></td>
-        <td th:text="${task.priority.name}"></td>
-        <td th:text="${task.completed} ? 'Hotovo' : 'Nedokončeno'"></td>
+<header>Správce úkolů</header>
+<main>
+    <div class="top-buttons">
+        <button onclick="showCreateTask()">+ Vytvořit úkol</button>
+        <button onclick="document.getElementById('search-box').style.display = 'inline';">🔍 Vyhledat</button>
+        <input type="text" id="search-box" placeholder="Hledat..." style="display:none; padding:5px; font-size:1em; margin-left:10px;" onkeyup="filterTasks()" />
+    </div>
+
+    <div class="sort-buttons" id="sort-section" style="display:none;">
+        <button onclick="sortTasks('title')">Řadit podle názvu</button>
+        <button onclick="sortTasks('priority')">Řadit podle priority</button>
+    </div>
+
+    <div id="no-tasks">
+        <p>Nemáte žádný úkol, začněte stisknutím tlačítka</p>
+        <button onclick="addDummyTask()">+ Vytvořit úkol</button>
+    </div>
+
+    <table id="tasks-table" style="display:none;">
+        <thead>
+        <tr>
+            <th>Název</th>
+            <th>Popis</th>
+            <th>Priorita</th>
+            <th>Stav</th>
+            <th>Akce</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</main>
+
+<script>
+    function showCreateTask() {
+      alert('Zde může být formulář pro vytvoření úkolu. (JavaScript/SpringBoot)');
+    }
+
+    function filterTasks() {
+      const input = document.getElementById('search-box').value.toLowerCase();
+      const rows = document.querySelectorAll('#tasks-table tbody tr');
+      rows.forEach(row => {
+        const title = row.cells[0].textContent.toLowerCase();
+        row.style.display = title.includes(input) ? '' : 'none';
+      });
+    }
+
+    function sortTasks(by) {
+      const tbody = document.querySelector('#tasks-table tbody');
+      const rows = Array.from(tbody.rows);
+      const index = by === 'title' ? 0 : 2;
+
+      rows.sort((a, b) => a.cells[index].textContent.localeCompare(b.cells[index].textContent));
+      rows.forEach(row => tbody.appendChild(row));
+    }
+
+    function addDummyTask() {
+      const table = document.getElementById('tasks-table');
+      const noTasks = document.getElementById('no-tasks');
+      const sortSection = document.getElementById('sort-section');
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>Ukázkový úkol</td>
+        <td>Popis úkolu</td>
+        <td class="medium">Střední</td>
+        <td>Nedokončeno</td>
         <td>
-            <a th:href="@{'/tasks/edit/' + ${task.id}}">Upravit</a> |
-            <a th:href="@{'/tasks/delete/' + ${task.id}}" onclick="return confirm('Opravdu chceš smazat tento úkol?');">Smazat</a>
+          <button class="action-btn" title="Upravit">✏️</button>
+          <button class="action-btn delete" title="Smazat" onclick="deleteTask(this)">🗑️</button>
         </td>
-    </tr>
-    </tbody>
-</table>
+      `;
+
+      document.querySelector('#tasks-table tbody').appendChild(row);
+      table.style.display = 'table';
+      sortSection.style.display = 'block';
+      noTasks.style.display = 'none';
+    }
+
+    function deleteTask(btn) {
+      const row = btn.closest('tr');
+      row.remove();
+      const tbody = document.querySelector('#tasks-table tbody');
+      if (tbody.children.length === 0) {
+        document.getElementById('tasks-table').style.display = 'none';
+        document.getElementById('sort-section').style.display = 'none';
+        document.getElementById('no-tasks').style.display = 'block';
+      }
+    }
+</script>
 </body>
 </html>

@@ -23,32 +23,16 @@ public class TaskModel {
     @JoinColumn(name = "priority_id")
     private Priority priority;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    public TaskModel(User user) {
-        this.user = user;
-    }
-
-    public TaskModel() {
-
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
     public void setPriority(Priority priority) {
         this.priority = priority;
     }
 
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
 }
+

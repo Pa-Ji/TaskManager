@@ -2,40 +2,77 @@
 <html lang="cs" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Task Manager</title>
-</head>
+    <title>Úkol</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f7fa;
+            padding: 20px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #01579b;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 16px;
+            background-color: #0288d1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0277bd;
+        }
+    </style>
+</head>A
 <body>
-<h1 th:text="${task.id} == null ? 'Nový úkol' : 'Upravit úkol'"></h1>
-<form th:action="@{/tasks}" th:object="${task}" method="post">
-    <input type="hidden" th:field="*{id}" />
+<div class="form-container">
+    <h2 th:text="${task.id == null} ? '📝 Vytvořit nový úkol' : '✏️ Upravit úkol'"></h2>
+    <form action="/save" method="post">
+        <input type="hidden" name="id" th:value="${task.id}">
 
-    <label>Název:
-        <input type="text" th:field="*{title}" required />
-    </label><br/>
+        <label for="title">Název úkolu</label>
+        <input type="text" id="title" name="title" th:value="${task.title}" required>
 
-    <label>Popis:
-        <textarea th:field="*{description}" required></textarea>
-    </label><br/>
+        <label for="description">Popis</label>
+        <textarea id="description" name="description" rows="4" th:text="${task.description}"></textarea>
 
-    <label>Priorita:
-        <select th:field="*{priority.id}" required>
-            <option th:each="p : ${priorities}" th:value="${p.id}" th:text="${p.name}"></option>
+        <label for="priority">Priorita</label>
+        <select id="priority" name="priority.id" required>
+            <option value="" disabled selected>Vyberte prioritu</option>
+            <th:block th:each="p : ${priorities}">
+                <option th:value="${p.id}" th:text="${p.name}"
+                        th:selected="${task.priority != null} ? ${task.priority.id} == ${p.id} : false"></option>
+            </th:block>
         </select>
-    </label><br/>
 
-    <label>Uživatel:
-        <select th:field="*{user.id}" required>
-            <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.username}"></option>
-        </select>
-    </label><br/>
+        <label>
+            <input type="checkbox" name="completed" th:checked="${task.completed}"> Splněno
+        </label>
 
-    <label>Hotovo:
-        <input type="checkbox" th:field="*{completed}" />
-    </label><br/>
-
-
-    <button type="submit">Uložit</button>
-</form>
-<a th:href="@{/tasks}">Zpět</a>
+        <button type="submit">💾 Uložit</button>
+    </form>
+</div>
 </body>
 </html>

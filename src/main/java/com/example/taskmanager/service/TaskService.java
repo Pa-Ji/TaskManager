@@ -36,7 +36,4 @@ public class TaskService {
         return repository.findByPriorityName(priorityName);
     }
 
-    public List<TaskModel> getTasksByUserId(Long userId) {
-        return repository.findByUserId(userId);
-    }
 }
