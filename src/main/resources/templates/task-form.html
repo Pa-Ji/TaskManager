@@ -1,0 +1,27 @@
+<!-- templates/task-form.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Úkol</title>
+</head>
+<body>
+<h1 th:text="${task.id == null} ? 'Nový úkol' : 'Upravit úkol'"></h1>
+<form th:action="@{/tasks}" th:object="${task}" method="post">
+    <input type="hidden" th:field="*{id}" />
+    <label>Název:</label>
+    <input type="text" th:field="*{title}" /><br/>
+    <label>Popis:</label>
+    <textarea th:field="*{description}"></textarea><br/>
+    <label>Priorita:</label>
+    <select th:field="*{priority}">
+        <option value="low">Nízká</option>
+        <option value="medium">Střední</option>
+        <option value="high">Vysoká</option>
+    </select><br/>
+    <label>Hotovo:</label>
+    <input type="checkbox" th:field="*{completed}" /><br/>
+    <button type="submit">Uložit</button>
+</form>
+<a th:href="@{/tasks}">Zpět</a>
+</body>
+</html>

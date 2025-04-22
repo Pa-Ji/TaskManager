@@ -1,0 +1,34 @@
+<!-- templates/task-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Seznam úkolů</title>
+</head>
+<body>
+<h1>Seznam úkolů</h1>
+<a th:href="@{/tasks/new}">+ Nový úkol</a>
+<table>
+    <thead>
+    <tr>
+        <th>Název</th>
+        <th>Popis</th>
+        <th>Priorita</th>
+        <th>Stav</th>
+        <th>Akce</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks}">
+        <td th:text="${task.title}"></td>
+        <td th:text="${task.description}"></td>
+        <td th:text="${task.priority}"></td>
+        <td th:text="${task.completed} ? 'Hotovo' : 'Nedokončeno'"></td>
+        <td>
+            <a th:href="@{'/tasks/edit/' + ${task.id}}">Edit</a>
+            <a th:href="@{'/tasks/delete/' + ${task.id}}">Smazat</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
