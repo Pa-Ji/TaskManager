@@ -1,11 +1,20 @@
-<!-- templates/task-list.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="cs" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
+    <meta charset="UTF-8">
     <title>Seznam úkolů</title>
 </head>
 <body>
 <h1>Seznam úkolů</h1>
+<form th:action="@{/filter}" method="get">
+    <label for="priority">Filtrovat podle priority:</label>
+    <select name="priority" id="priority">
+        <option value="low">Nízká</option>
+        <option value="medium">Střední</option>
+        <option value="high">Vysoká</option>
+    </select>
+    <button type="submit">Filtrovat</button>
+</form>
 <a th:href="@{/tasks/new}">+ Nový úkol</a>
 <table>
     <thead>
@@ -24,8 +33,8 @@
         <td th:text="${task.priority}"></td>
         <td th:text="${task.completed} ? 'Hotovo' : 'Nedokončeno'"></td>
         <td>
-            <a th:href="@{'/tasks/edit/' + ${task.id}}">Edit</a>
-            <a th:href="@{'/tasks/delete/' + ${task.id}}">Smazat</a>
+            <a th:href="@{'/tasks/edit/' + ${task.id}}">Upravit</a> |
+            <a th:href="@{'/tasks/delete/' + ${task.id}}" onclick="return confirm('Opravdu chceš smazat tento úkol?');">Smazat</a>
         </td>
     </tr>
     </tbody>

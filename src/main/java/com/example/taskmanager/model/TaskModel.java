@@ -1,12 +1,12 @@
 package com.example.taskmanager.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class TaskModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

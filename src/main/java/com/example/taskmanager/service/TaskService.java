@@ -23,8 +23,8 @@ public class TaskService {
         return repository.findById(id);
     }
 
-    public TaskModel save(TaskModel task) {
-        return repository.save(task);
+    public void save(TaskModel task) {
+        repository.save(task);
     }
 
     public void delete(Long id) {
