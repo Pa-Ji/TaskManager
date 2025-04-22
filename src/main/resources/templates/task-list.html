@@ -30,7 +30,7 @@
     <tr th:each="task : ${tasks}">
         <td th:text="${task.title}"></td>
         <td th:text="${task.description}"></td>
-        <td th:text="${task.priority}"></td>
+        <td th:text="${task.priority.name}"></td>
         <td th:text="${task.completed} ? 'Hotovo' : 'Nedokončeno'"></td>
         <td>
             <a th:href="@{'/tasks/edit/' + ${task.id}}">Upravit</a> |

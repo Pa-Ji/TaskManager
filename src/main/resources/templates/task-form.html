@@ -2,35 +2,37 @@
 <html lang="cs" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Task Managery</title>
+    <title>Task Manager</title>
 </head>
 <body>
-<h1 th:text="${task.id == null} ? 'Nový úkol' : 'Upravit úkol'"></h1>
+<h1 th:text="${task.id} == null ? 'Nový úkol' : 'Upravit úkol'"></h1>
 <form th:action="@{/tasks}" th:object="${task}" method="post">
     <input type="hidden" th:field="*{id}" />
-    <label>Název:</label>
-    <label>
-        <input type="text" th:field="*{title}" />
+
+    <label>Název:
+        <input type="text" th:field="*{title}" required />
     </label><br/>
 
-    <label>Popis:</label>
-    <label>
-        <textarea th:field="*{description}"></textarea>
+    <label>Popis:
+        <textarea th:field="*{description}" required></textarea>
     </label><br/>
 
-    <label>Priorita:</label>
-    <label>
-        <select th:field="*{priority}">
-            <option value="low">Nízká</option>
-            <option value="medium">Střední</option>
-            <option value="high">Vysoká</option>
+    <label>Priorita:
+        <select th:field="*{priority.id}" required>
+            <option th:each="p : ${priorities}" th:value="${p.id}" th:text="${p.name}"></option>
         </select>
     </label><br/>
 
-    <label>Hotovo:</label>
-    <label>
+    <label>Uživatel:
+        <select th:field="*{user.id}" required>
+            <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.username}"></option>
+        </select>
+    </label><br/>
+
+    <label>Hotovo:
         <input type="checkbox" th:field="*{completed}" />
     </label><br/>
+
 
     <button type="submit">Uložit</button>
 </form>

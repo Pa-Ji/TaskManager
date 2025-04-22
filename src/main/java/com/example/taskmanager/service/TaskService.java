@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Service
 public class TaskService {
+
     private final TaskRepository repository;
 
     public TaskService(TaskRepository repository) {
@@ -29,5 +30,13 @@ public class TaskService {
 
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    public List<TaskModel> getTasksByPriority(String priorityName) {
+        return repository.findByPriorityName(priorityName);
+    }
+
+    public List<TaskModel> getTasksByUserId(Long userId) {
+        return repository.findByUserId(userId);
     }
 }
