@@ -1,4 +1,4 @@
-package com.example.taskmanager.config;
+package com.example.taskmanager;
 
 import com.example.taskmanager.model.TaskPriority;
 import com.example.taskmanager.repository.PriorityRepository;
