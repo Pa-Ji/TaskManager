@@ -49,26 +49,24 @@
 <body>
 <div class="form-container">
     <h2 th:text="${task.id == null} ? '📝 Vytvořit nový úkol' : '✏️ Upravit úkol'"></h2>
-    <form action="/save" method="post">
-        <input type="hidden" name="id" th:value="${task.id}">
+    <form th:action="@{/save}" th:object="${task}" method="post">
+        <input type="hidden" th:field="*{id}">
 
         <label for="title">Název úkolu</label>
-        <input type="text" id="title" name="title" th:value="${task.title}" required>
+        <input type="text" id="title" th:field="*{title}" required>
 
         <label for="description">Popis</label>
-        <textarea id="description" name="description" rows="4" th:text="${task.description}"></textarea>
+        <textarea id="description" rows="4" th:field="*{description}"></textarea>
 
         <label for="priority">Priorita</label>
-        <select id="priority" name="priority.id" required>
-            <option value="" disabled selected>Vyberte prioritu</option>
-            <th:block th:each="p : ${priorities}">
-                <option th:value="${p.id}" th:text="${p.name}"
-                        th:selected="${task.priority != null} ? ${task.priority.id} == ${p.id} : false"></option>
-            </th:block>
+        <select id="priority" th:field="*{priority.id}" class="form-control">
+            <option th:each="priority : ${priorities}"
+                    th:value="${priority.id}"
+                    th:text="${priority.name}">Vyber prioritu</option>
         </select>
 
         <label>
-            <input type="checkbox" name="completed" th:checked="${task.completed}"> Splněno
+            <input type="checkbox" th:field="*{completed}"> Splněno
         </label>
 
         <button type="submit">💾 Uložit</button>

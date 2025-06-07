@@ -1,8 +1,9 @@
 package com.example.taskmanager.controller;
 
 import com.example.taskmanager.model.TaskModel;
-import com.example.taskmanager.repository.PriorityRepository;
-import com.example.taskmanager.repository.TaskRepository;
+import com.example.taskmanager.model.TaskPriority;
+import com.example.taskmanager.service.PriorityService;
+import com.example.taskmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,63 +12,58 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
-
 @Controller
 public class TaskController {
 
     @Autowired
-    private TaskRepository taskRepository;
+    private TaskService taskService;
 
     @Autowired
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
-    // Domovská stránka – seznam úkolů
-    @GetMapping("/")
-    public String showTaskList(Model model) {
-        List<TaskModel> tasks = taskRepository.findAll();
-        model.addAttribute("tasks", tasks);
-        return "index";
+    @GetMapping("/home")
+    public String taskList(Model model) {
+        model.addAttribute("tasks", taskService.findAll());
+        return "task-list";
     }
 
-    // Formulář pro vytvoření nového úkolu
     @GetMapping("/create")
-    public String createTaskForm(Model model) {
+    public String showCreateForm(Model model) {
         model.addAttribute("task", new TaskModel());
-        model.addAttribute("priorities", priorityRepository.findAll());
+        model.addAttribute("priorities", priorityService.findAll());
         return "task-form";
     }
 
-    // Formulář pro úpravu existujícího úkolu
     @GetMapping("/edit/{id}")
-    public String editTaskForm(@PathVariable Long id, Model model) {
-        TaskModel task = taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Neplatné ID úkolu: " + id));
+    public String showEditForm(@PathVariable Long id, Model model) {
+        TaskModel task = taskService.findById(id);
         model.addAttribute("task", task);
-        model.addAttribute("priorities", priorityRepository.findAll());
+        model.addAttribute("priorities", priorityService.findAll());
         return "task-form";
     }
 
-    // Uložení nebo aktualizace úkolu
     @PostMapping("/save")
     public String saveTask(@ModelAttribute("task") TaskModel task) {
-        taskRepository.save(task);
-        return "redirect:/";
+        try {
+            // 👉 Ladicí výpisy:
+            System.out.println("Zvolená priorita: " + task.getPriority());
+            System.out.println("Zvolená priorita ID: " + (task.getPriority() != null ? task.getPriority().getId() : "null"));
+
+            // najdi prioritu podle ID a nastav ji správně
+            TaskPriority priority = priorityService.findById(task.getPriority().getId());
+            task.setPriority(priority);
+
+            taskService.save(task);
+            return "redirect:/";
+        } catch (Exception e) {
+            e.printStackTrace(); // vypíše chybu do konzole
+            return "error";
+        }
     }
 
-    @GetMapping("/toggle-completed/{id}")
-    public String toggleCompleted(@PathVariable Long id) {
-        TaskModel task = taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Neplatné ID úkolu: " + id));
-        task.setCompleted(!task.isCompleted());
-        taskRepository.save(task);
-        return "redirect:/";
-    }
-
-    // Smazání úkolu
     @GetMapping("/delete/{id}")
     public String deleteTask(@PathVariable Long id) {
-        taskRepository.deleteById(id);
-        return "redirect:/";
+        taskService.deleteById(id);
+        return "redirect:/home";
     }
 }

@@ -2,38 +2,30 @@ package com.example.taskmanager.service;
 
 import com.example.taskmanager.model.TaskModel;
 import com.example.taskmanager.repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
 
-    private final TaskRepository repository;
+    @Autowired
+    private TaskRepository taskRepository;
 
-    public TaskService(TaskRepository repository) {
-        this.repository = repository;
+    public List<TaskModel> findAll() {
+        return taskRepository.findAll();
     }
 
-    public List<TaskModel> getAllTasks() {
-        return repository.findAll();
-    }
-
-    public Optional<TaskModel> getById(Long id) {
-        return repository.findById(id);
+    public TaskModel findById(Long id) {
+        return taskRepository.findById(id).orElse(null);
     }
 
     public void save(TaskModel task) {
-        repository.save(task);
+        taskRepository.save(task);
     }
 
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public void deleteById(Long id) {
+        taskRepository.deleteById(id);
     }
-
-    public List<TaskModel> getTasksByPriority(String priorityName) {
-        return repository.findByPriorityName(priorityName);
-    }
-
 }

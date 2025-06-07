@@ -21,9 +21,13 @@ public class TaskModel {
 
     @ManyToOne
     @JoinColumn(name = "priority_id")
-    private Priority priority;
+    private TaskPriority priority;
 
-    public void setPriority(Priority priority) {
+    public TaskPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TaskPriority priority) {
         this.priority = priority;
     }
 
